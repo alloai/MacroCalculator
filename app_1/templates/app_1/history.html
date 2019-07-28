@@ -1,0 +1,143 @@
+{% extends "base_generic.html" %}
+{% block title %}History{% endblock %}
+{% block content %}
+
+{% load staticfiles %}
+
+<script type="text/javascript">
+  $(document).ready(function() {
+
+    var table = $('#table1').DataTable({
+        "dom": '<"top">rt<"bottom"p><"clear">',
+		"order": [[ 5, "desc" ]],
+		"pageLength": 50,
+    });
+
+/*
+    jQuery("#buttonfilter").click(function(event){
+    	event.preventDefault();
+    	$("#dlDropDown").dropdown("toggle");
+    	return false;
+    });*/
+
+
+	 jQuery("#namefilter").keyup(function () {
+	     table
+        .columns( 0 )
+        .search( this.value )
+        .draw();
+	 });
+
+});
+
+
+
+</script>
+
+<div class="container-fluid">
+
+	<h2>Your history</h2>
+
+	<div class="input-group">
+		<div class="input-group-btn search-panel">
+		   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+				<span id="search_concept">Filter by</span> <span class="caret"></span>
+		   </button>
+
+			<div class="dropdown-menu" role="menu" style="width:600px !important;">
+				<form>
+					<div class="form-group form-inline">
+						<label for="namefilter">Name: </label>
+						<input id="namefilter" class="form-control" type="text" />
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+
+	<table id="table1" class="table">
+	 <thead>
+	  <tr>
+		  <th scope="col">Name</th>
+		  <th scope="col">Calories</th>
+		  <th scope="col">Carbohydrates</th>
+		  <th scope="col">Proteins</th>
+		  <th scope="col">Fats</th>
+		  <th scope="col">Date</th>
+		  <th scope="col">Actions</th>
+	  </tr>
+	 </thead>
+	 <tbody>
+
+	{% if items_history %}
+	{% for dup in items_history %}
+		<tr>
+			<td><strong><a href="/profile/{{ user_id }}/history/item/{{ dup.ITEM.id }}" style="color: black">{{ dup.ITEM.name }}</a></strong></td>
+			<td>{{ dup.ITEM.calories }}</td>
+			<td>{{ dup.ITEM.tot_carbs|floatformat:2 }}</td>
+			<td>{{ dup.ITEM.tot_protein|floatformat:2  }}</td>
+			<td>{{ dup.ITEM.tot_fat|floatformat:2  }}</td>
+			<td>{{ dup.DATE }}</td>
+			<td><a href="/profile/{{ user_id }}/item/{{ dup.ITEM.id }}/delete">
+				<img border="0" alt="delete food" src="{% static 'images/delete.png' %}" width="30" height="30    ">
+			</a></td>
+		</tr>
+	{% endfor %}
+	{% else %}
+        <p><strong>NOTHING TO SHOW</strong></p>
+    {% endif %}
+
+	 </tbody>
+	</table>
+</div>
+<div class="container-fluid">
+    <h2>How well are you doing?</h2>
+        <table id="table1" class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Macronutrient</th>
+                    <th scope="col">Consumed</th>
+                    <th scope="col">Objective</th>
+                    <th scope="col">Percentage achieved</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if user_objectives %} 
+                    <tr>
+                        <td><strong></strong>Calories</td>
+                        <td>{{ macro_eaten.cal|floatformat:2 }}</td>
+                        <td>{{  user_objectives.calories_obj }}</td>
+                        <td>{{ macro_eaten.cal_p|floatformat:2 }}%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Carbohydrates</strong></td>
+                        <td>{{ macro_eaten.carb|floatformat:2 }}</td>
+                        <td>{{  user_objectives.carbs_obj }}</td>
+                        <td>{{ macro_eaten.carb_p|floatformat:2 }}%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Proteins</strong></td>
+                        <td>{{ macro_eaten.prot|floatformat:2 }}</td>
+                        <td>{{  user_objectives.protein_obj }}</td>
+                        <td>{{ macro_eaten.prot_p|floatformat:2 }}%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fats</strong></td>
+                        <td>{{ macro_eaten.fat|floatformat:2 }}</td>
+                        <td>{{  user_objectives.fat_obj }}</td>
+                        <td>{{ macro_eaten.fat_p|floatformat:2 }}%</td>
+                    </tr>
+                {% else %}
+                    <p><strong>NOTHING TO SHOW</strong></p>
+                {% endif %}
+            </tbody>
+        </table>
+</div>
+<div>
+    
+</div>
+
+
+{% endblock %}
