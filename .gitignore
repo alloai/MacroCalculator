@@ -1,0 +1,15 @@
+## Byte-compiled
+*/__pycache__/*
+/.vscode/
+/build/
+
+## Database
+*.sqlite3
+
+## Components
+components/
+
+## Testing
+
+/htmlcov/*
+/node_modules/
